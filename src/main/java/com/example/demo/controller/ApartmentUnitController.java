@@ -1,55 +1,49 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ApartmentUnit;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
-import com.example.demo.service.ApartmentUnitService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/units")
-public class ApartmentUnitController {
-
-    @Autowired
-    private ApartmentUnitService unitService;
+@RequestMapping("/auth")
+public class AuthController {
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @PostMapping
-    public ResponseEntity<ApartmentUnit> createUnit(@RequestBody ApartmentUnit unit) {
-        ApartmentUnit savedUnit = unitService.saveUnit(unit);
-        return ResponseEntity.ok(savedUnit);
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+    
+        user.setRole("RESIDENT");
+
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ApartmentUnit>> getAllUnits() {
-        List<ApartmentUnit> units = unitService.getAllUnits();
-        return ResponseEntity.ok(units);
-    }
-    @PutMapping("/assign/{userId}/{unitId}")
-    public ResponseEntity<ApartmentUnit> assignUnitToUser(
-            @PathVariable Long userId,
-            @PathVariable Long unitId
-    ) {
-        User user = userService.findById(userId);
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        User user = userService.findByEmail(request.getEmail());
+
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
 
-        ApartmentUnit unit = unitService.getUnitById(unitId);
-        if (unit == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        unit.setOwner(user);
-        ApartmentUnit updatedUnit = unitService.saveUnit(unit);
-
-        return ResponseEntity.ok(updatedUnit);
+        return ResponseEntity.ok("Login successful");
     }
 }
