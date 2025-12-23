@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
-import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,44 +19,31 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
+    // ================= REGISTER =================
     @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    User user = new User();
-    user.setName(request.getName());
-    user.setEmail(request.getEmail());
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
 
-    user.setRole(request.getRole() != null ? request.getRole() : "RESIDENT");
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-    User savedUser = userService.saveUser(user);
-    return ResponseEntity.ok(savedUser);
-}
+        // Default role
+        user.setRole("RESIDENT");
 
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    User user = userService.findByEmail(loginRequest.getEmail());
-
-    if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        return ResponseEntity.status(401).body("Invalid email or password");
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
-    String token = jwtTokenProvider.generateToken(
-            user.getEmail(),
-            user.getId(),
-            user.getRole() != null ? user.getRole() : "RESIDENT"
-    );
+    // ================= LOGIN =================
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-    LoginResponse response = new LoginResponse(
-            token,
-            user.getId(),
-            user.getEmail(),
-            user.getRole() != null ? user.getRole() : "RESIDENT"
-    );
+        User user = userService.findByEmail(request.getEmail());
 
-    return ResponseEntity.ok(response);
-}
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
 
+        return ResponseEntity.ok("Login successful");
+    }
 }
