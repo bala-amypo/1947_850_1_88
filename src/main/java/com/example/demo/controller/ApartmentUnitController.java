@@ -20,18 +20,17 @@ public class ApartmentUnitController {
     @Autowired
     private UserService userService;
 
-
     @PostMapping
     public ResponseEntity<ApartmentUnit> createUnit(@RequestBody ApartmentUnit unit) {
         ApartmentUnit savedUnit = unitService.saveUnit(unit);
         return ResponseEntity.ok(savedUnit);
     }
 
-    @GetMapping
     public ResponseEntity<List<ApartmentUnit>> getAllUnits() {
         List<ApartmentUnit> units = unitService.getAllUnits();
         return ResponseEntity.ok(units);
     }
+
     @PutMapping("/assign/{userId}/{unitId}")
     public ResponseEntity<ApartmentUnit> assignUnitToUser(
             @PathVariable Long userId,
