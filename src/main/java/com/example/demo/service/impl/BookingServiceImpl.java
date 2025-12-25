@@ -64,7 +64,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus("CONFIRMED");
 
         Booking savedBooking = bookingRepository.save(booking);
-        bookingLogService.addLog(savedBooking.getId(), "Booking created");
+        bookingLogService.addLog(savedBooking, "Booking created");
 
         return savedBooking;
     }
@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus("CANCELLED");
 
         Booking updated = bookingRepository.save(booking);
-        bookingLogService.addLog(updated.getId(), "Booking cancelled");
+        bookingLogService.addLog(updated, "Booking cancelled");
 
         return updated;
     }

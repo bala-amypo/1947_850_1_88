@@ -32,6 +32,16 @@ public class BookingLogServiceImpl implements BookingLogService {
         BookingLog log = new BookingLog();
         log.setBooking(booking);
         log.setLogMessage(message);
+        log.onCreate(); // Set the timestamp
+
+        return bookingLogRepository.save(log);
+    }
+
+    public BookingLog addLog(Booking booking, String message) {
+        BookingLog log = new BookingLog();
+        log.setBooking(booking);
+        log.setLogMessage(message);
+        log.onCreate(); // Set the timestamp
 
         return bookingLogRepository.save(log);
     }
