@@ -28,12 +28,13 @@ public class SwaggerConfig {
                         .description("REST API for managing apartment facility bookings, users, and logs")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("API Support")
+                                //.name("API Support")
                                 .url("https://9248.408procr.amypo.ai/")
-                                
-                        .license(new License()
-                                .name("MIT License")
-                                .url("https://opensource.org/licenses/MIT")))
+                                // .email("support@apartmentbooking.com"))
+                        //.license(new License()
+                                //.name("MIT License")
+                                //.url("https://opensource.org/licenses/MIT"//))
+                                )
                 .components(
                         new Components().addSecuritySchemes("bearerAuth", securityScheme)
                 )
