@@ -1,64 +1,64 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth", description = "User Authentication and Registration")
 public class AuthController {
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    User user = new User();
-    user.setName(request.getName());
-    user.setEmail(request.getEmail());
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-    user.setRole(request.getRole() != null ? request.getRole() : "RESIDENT");
-
-    User savedUser = userService.saveUser(user);
-    return ResponseEntity.ok(savedUser);
-}
-
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    User user = userService.findByEmail(loginRequest.getEmail());
-
-    if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        return ResponseEntity.status(401).body("Invalid email or password");
+    public AuthController(UserService userService,
+                        AuthenticationManager authenticationManager,
+                        JwtTokenProvider jwtTokenProvider) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    String token = jwtTokenProvider.generateToken(
-            user.getEmail(),
-            user.getId(),
-            user.getRole() != null ? user.getRole() : "RESIDENT"
-    );
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole("RESIDENT");
 
-    LoginResponse response = new LoginResponse(
-            token,
-            user.getId(),
-            user.getEmail(),
-            user.getRole() != null ? user.getRole() : "RESIDENT"
-    );
+        User registered = userService.register(user);
 
-    return ResponseEntity.ok(response);
-}
+        return ResponseEntity.status(HttpStatus.CREATED).body(registered);
+    }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user = userService.findByEmail(request.getEmail());
+        String token = jwtTokenProvider.generateToken(authentication, user.getId(),
+                user.getEmail(), user.getRole());
+
+        AuthResponse response = new AuthResponse(token, user.getId(),
+                user.getEmail(), user.getRole());
+
+        return ResponseEntity.ok(response);
+    }
 }
