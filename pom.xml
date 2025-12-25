@@ -69,7 +69,11 @@
     <artifactId>guice</artifactId>
     <version>4.2.3</version>
 </dependency>
-
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
 
 <dependency>
     <groupId>mysql</groupId>
@@ -82,28 +86,27 @@
     <version>2.2.0</version>
 </dependency>
 
-<!-- TestNG -->
+<!-- Test Dependencies -->
 <dependency>
     <groupId>org.testng</groupId>
     <artifactId>testng</artifactId>
-    <version>7.9.0</version>
+    <version>7.8.0</version>
     <scope>test</scope>
 </dependency>
 
-<!-- Mockito -->
 <dependency>
     <groupId>org.mockito</groupId>
     <artifactId>mockito-core</artifactId>
-    <version>5.10.0</version>
+    <version>5.4.0</version>
     <scope>test</scope>
 </dependency>
 
-<!-- Spring Mock -->
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-test</artifactId>
     <scope>test</scope>
 </dependency>
+
 
 
 
