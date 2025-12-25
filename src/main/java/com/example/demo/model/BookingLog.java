@@ -1,29 +1,33 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "booking_logs")
 public class BookingLog {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
+    @Column(nullable = false)
     private String logMessage;
-    private LocalDateTime loggedAt;
 
-    public BookingLog() {}
+    @Column(nullable = false)
+    private LocalDateTime loggedAt;
 
     @PrePersist
     public void onCreate() {
         this.loggedAt = LocalDateTime.now();
     }
-
-    public void setBooking(Booking booking) { this.booking = booking; }
-    public void setLogMessage(String logMessage) { this.logMessage = logMessage; }
 }
