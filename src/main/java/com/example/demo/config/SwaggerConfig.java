@@ -30,7 +30,7 @@ public class SwaggerConfig {
                         .contact(new Contact()
                                 .name("API Support")
                                 .url("https://9248.408procr.amypo.ai/")
-                                .email("support@apartmentbooking.com"))
+                                
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")))
