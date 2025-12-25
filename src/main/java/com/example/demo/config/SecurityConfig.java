@@ -52,4 +52,14 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+    @Bean
+    public String jwtSecret() {
+        return "MySuperSecretJwtKeyForApartmentSystem123456";
+    }
+    
+    @Bean
+    public Long jwtExpirationMs() {
+        return 3600000L;
+    }
 }
