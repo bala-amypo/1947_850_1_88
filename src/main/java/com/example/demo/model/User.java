@@ -1,12 +1,10 @@
+
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id
@@ -18,7 +16,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String role = "RESIDENT";
@@ -27,14 +24,6 @@ public class User {
     private ApartmentUnit apartmentUnit;
 
     public User() {}
-    
-    public User(Long id, String name, String email, String password, String role) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
 
     // --- Getters ---
     public Long getId() { return id; }
@@ -42,7 +31,6 @@ public class User {
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public String getRole() { return role; }
-    public ApartmentUnit getApartmentUnit() { return apartmentUnit; }
 
     // --- Setters ---
     public void setId(Long id) { this.id = id; }
@@ -50,5 +38,4 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
     public void setRole(String role) { this.role = role; }
-    public void setApartmentUnit(ApartmentUnit apartmentUnit) { this.apartmentUnit = apartmentUnit; }
 }
