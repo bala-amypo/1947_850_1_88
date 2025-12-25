@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Booking;
 import com.example.demo.model.BookingLog;
 
 import java.util.List;

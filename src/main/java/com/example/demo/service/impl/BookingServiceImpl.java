@@ -66,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
         // Save booking first
         Booking savedBooking = bookingRepository.save(booking);
 
-        // Add booking log using the saved Booking object
+        // Log the creation
         bookingLogService.addLog(savedBooking, "Booking created");
 
         return savedBooking;
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking updatedBooking = bookingRepository.save(booking);
 
-        // Add booking log using the saved Booking object
+        // Log the cancellation
         bookingLogService.addLog(updatedBooking, "Booking cancelled");
 
         return updatedBooking;
