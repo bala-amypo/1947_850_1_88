@@ -23,9 +23,9 @@ public class BookingServiceImpl implements BookingService {
     private final BookingLogService bookingLogService;
 
     public BookingServiceImpl(BookingRepository bookingRepository,
-                            FacilityRepository facilityRepository,
-                            UserRepository userRepository,
-                            BookingLogService bookingLogService) {
+                              FacilityRepository facilityRepository,
+                              UserRepository userRepository,
+                              BookingLogService bookingLogService) {
         this.bookingRepository = bookingRepository;
         this.facilityRepository = facilityRepository;
         this.userRepository = userRepository;
@@ -63,8 +63,11 @@ public class BookingServiceImpl implements BookingService {
         booking.setUser(user);
         booking.setStatus(Booking.STATUS_CONFIRMED);
 
+        // Save booking first
         Booking savedBooking = bookingRepository.save(booking);
-        bookingLogService.addLog(savedBooking.getId(), "Booking created");
+
+        // Add booking log using the saved Booking object
+        bookingLogService.addLog(savedBooking, "Booking created");
 
         return savedBooking;
     }
@@ -78,10 +81,12 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(Booking.STATUS_CANCELLED);
 
-        Booking updated = bookingRepository.save(booking);
-        bookingLogService.addLog(updated.getId(), "Booking cancelled");
+        Booking updatedBooking = bookingRepository.save(booking);
 
-        return updated;
+        // Add booking log using the saved Booking object
+        bookingLogService.addLog(updatedBooking, "Booking cancelled");
+
+        return updatedBooking;
     }
 
     @Override
@@ -91,4 +96,3 @@ public class BookingServiceImpl implements BookingService {
                         new ResourceNotFoundException("Booking not found"));
     }
 }
-
