@@ -1,54 +1,32 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.ApartmentUnit;
-import com.example.demo.model.User;
 import com.example.demo.service.ApartmentUnitService;
-import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/units")
+@Tag(name = "ApartmentUnit", description = "Apartment Unit Management")
 public class ApartmentUnitController {
+    private final ApartmentUnitService apartmentUnitService;
 
-    @Autowired
-    private ApartmentUnitService unitService;
-
-    @Autowired
-    private UserService userService;
-
-    @PostMapping
-    public ResponseEntity<ApartmentUnit> createUnit(@RequestBody ApartmentUnit unit) {
-        ApartmentUnit savedUnit = unitService.saveUnit(unit);
-        return ResponseEntity.ok(savedUnit);
+    public ApartmentUnitController(ApartmentUnitService apartmentUnitService) {
+        this.apartmentUnitService = apartmentUnitService;
     }
 
-    public ResponseEntity<List<ApartmentUnit>> getAllUnits() {
-        List<ApartmentUnit> units = unitService.getAllUnits();
-        return ResponseEntity.ok(units);
+    @PostMapping("/assign/{userId}")
+    public ResponseEntity<?> assignUnit(@PathVariable Long userId,
+                                        @RequestBody ApartmentUnit unit) {
+        ApartmentUnit assigned = apartmentUnitService.assignUnitToUser(userId, unit);
+        return ResponseEntity.status(HttpStatus.CREATED).body(assigned);
     }
 
-    @PutMapping("/assign/{userId}/{unitId}")
-    public ResponseEntity<ApartmentUnit> assignUnitToUser(
-            @PathVariable Long userId,
-            @PathVariable Long unitId
-    ) {
-        User user = userService.findById(userId);
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        ApartmentUnit unit = unitService.getUnitById(unitId);
-        if (unit == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        unit.setOwner(user);
-        ApartmentUnit updatedUnit = unitService.saveUnit(unit);
-
-        return ResponseEntity.ok(updatedUnit);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserUnit(@PathVariable Long userId) {
+        ApartmentUnit unit = apartmentUnitService.getUnitByUser(userId);
+        return ResponseEntity.ok(unit);
     }
 }
