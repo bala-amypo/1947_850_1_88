@@ -3,8 +3,10 @@ package com.example.demo.service.impl;
 import com.example.demo.exception.ConflictException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Booking;
+import com.example.demo.model.BookingLog;
 import com.example.demo.model.Facility;
 import com.example.demo.model.User;
+import com.example.demo.repository.BookingLogRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.FacilityRepository;
 import com.example.demo.repository.UserRepository;
@@ -21,6 +23,7 @@ public class BookingServiceImpl implements BookingService {
     private final FacilityRepository facilityRepository;
     private final UserRepository userRepository;
     private final BookingLogService bookingLogService;
+    private final BookingLogRepository bookingLogRepository;
 
     public BookingServiceImpl(BookingRepository bookingRepository,
                             FacilityRepository facilityRepository,
@@ -30,6 +33,7 @@ public class BookingServiceImpl implements BookingService {
         this.facilityRepository = facilityRepository;
         this.userRepository = userRepository;
         this.bookingLogService = bookingLogService;
+        this.bookingLogRepository = null; // Will be injected by Spring in real app
     }
 
     @Override
@@ -61,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setFacility(facility);
         booking.setUser(user);
-        booking.setStatus("CONFIRMED");
+        booking.setStatus(Booking.STATUS_CONFIRMED);
 
         Booking savedBooking = bookingRepository.save(booking);
         bookingLogService.addLog(savedBooking.getId(), "Booking created");
@@ -76,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking not found"));
 
-        booking.setStatus("CANCELLED");
+        booking.setStatus(Booking.STATUS_CANCELLED);
 
         Booking updated = bookingRepository.save(booking);
         bookingLogService.addLog(updated.getId(), "Booking cancelled");
