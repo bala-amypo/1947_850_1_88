@@ -31,10 +31,9 @@ public class SwaggerConfig {
                                 //.name("API Support")
                                 .url("https://9248.408procr.amypo.ai/")
                                 // .email("support@apartmentbooking.com"))
-                        //.license(new License()
-                                //.name("MIT License")
-                                //.url("https://opensource.org/licenses/MIT"//))
-                                )
+                        // .license(new License()
+                        //         .name("MIT License")
+                        //         .url("https://opensource.org/licenses/MIT")))
                 .components(
                         new Components().addSecuritySchemes("bearerAuth", securityScheme)
                 )
