@@ -5,14 +5,17 @@ import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
 
-        @Bean
-        public OpenAPI customOpenAPI() {
+    @Bean
+    public OpenAPI customOpenAPI() {
 
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
@@ -20,14 +23,22 @@ public class SwaggerConfig {
                 .bearerFormat("JWT");
 
         return new OpenAPI()
-        
+                .info(new Info()
+                        .title("Apartment Facility Booking System API")
+                        .description("REST API for managing apartment facility bookings, users, and logs")
+                        .version("1.0.0")
+                        .contact(new Contact()
+                                .name("API Support")
+                                .url("https://9248.408procr.amypo.ai/")
+                                .email("support@apartmentbooking.com"))
+                        .license(new License()
+                                .name("MIT License")
+                                .url("https://opensource.org/licenses/MIT")))
                 .components(
                         new Components().addSecuritySchemes("bearerAuth", securityScheme)
                 )
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearerAuth")
                 );
-        
-
-        }
+    }
 }
