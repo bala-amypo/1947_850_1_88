@@ -21,13 +21,20 @@ public class ApartmentUnit {
 
     // Constructors
     public ApartmentUnit() {}
+    
+    public ApartmentUnit(Long id, String unitNumber, Integer floor, User owner) {
+        this.id = id;
+        this.unitNumber = unitNumber;
+        this.floor = floor;
+        this.owner = owner;
+    }
+    
     public ApartmentUnit(String unitNumber, Integer floor, User owner) {
         this.unitNumber = unitNumber;
         this.floor = floor;
         this.owner = owner;
     }
 
-    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

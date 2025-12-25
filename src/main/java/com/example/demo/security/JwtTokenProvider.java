@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,13 +13,27 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final SecretKey secretKey;
+    private final long jwtExpirationMs;
+    
+    public JwtTokenProvider(String jwtSecret, Long jwtExpirationMs) {
+        this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        this.jwtExpirationMs = jwtExpirationMs;
+    }
 
-    private final long jwtExpirationMs = 24 * 60 * 60 * 1000; // 1 day
-
+    public String generateToken(Authentication authentication, Long userId, String email, String role) {
+        return Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .claim("userId", userId)
+                .claim("email", email)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
     public String generateToken(String email, Long userId, String role) {
-
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
@@ -44,5 +59,25 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public Long getUserIdFromToken(String token) {
+        Claims claims = getClaims(token);
+        Object userId = claims.get("userId");
+        if (userId != null) {
+            return Long.valueOf(userId.toString());
+        }
+        return Long.valueOf(claims.getSubject());
+    }
+    
+    public String getEmailFromToken(String token) {
+        Claims claims = getClaims(token);
+        Object email = claims.get("email");
+        return email != null ? email.toString() : claims.getSubject();
+    }
+    
+    public String getRoleFromToken(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("role", String.class);
     }
 }

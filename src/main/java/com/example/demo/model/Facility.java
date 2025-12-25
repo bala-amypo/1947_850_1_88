@@ -18,6 +18,14 @@ public class Facility {
     private String closeTime;
 
     public Facility() {}
+    
+    public Facility(Long id, String name, String description, String openTime, String closeTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
