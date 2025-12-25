@@ -2,15 +2,15 @@ package com.example.demo.controller;
 
 import com.example.demo.model.BookingLog;
 import com.example.demo.service.BookingLogService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/logs")
-@Tag(name = "BookingLog", description = "Booking Log Management")
 public class BookingLogController {
+
     private final BookingLogService bookingLogService;
 
     public BookingLogController(BookingLogService bookingLogService) {
@@ -18,8 +18,11 @@ public class BookingLogController {
     }
 
     @GetMapping("/booking/{bookingId}")
-    public ResponseEntity<?> getBookingLogs(@PathVariable Long bookingId) {
-        List<BookingLog> logs = bookingLogService.getLogsByBooking(bookingId);
-        return ResponseEntity.ok(logs);
+    public ResponseEntity<List<BookingLog>> getLogsByBooking(
+            @PathVariable Long bookingId) {
+
+        return ResponseEntity.ok(
+                bookingLogService.getLogsByBooking(bookingId)
+        );
     }
 }
