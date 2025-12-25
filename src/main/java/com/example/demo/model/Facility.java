@@ -1,29 +1,48 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "facilities")
 public class Facility {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
+    
     private String name;
-
-    @Column
     private String description;
-
-    @Column(nullable = false)
+    
+    @Column(name = "open_time")
     private String openTime;
-
-    @Column(nullable = false)
+    
+    @Column(name = "close_time")
     private String closeTime;
+
+    public Facility() {}
+
+    public Facility(Long id, String name, String description, String openTime, String closeTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+    }
+
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    
+    public String getOpenTime() { return openTime; }
+    public void setOpenTime(String openTime) { this.openTime = openTime; }
+    
+    public String getCloseTime() { return closeTime; }
+    public void setCloseTime(String closeTime) { this.closeTime = closeTime; }
 }
