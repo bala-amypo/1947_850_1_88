@@ -4,6 +4,7 @@ import com.example.demo.model.Booking;
 import com.example.demo.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/bookings")
