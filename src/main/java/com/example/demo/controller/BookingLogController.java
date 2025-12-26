@@ -18,6 +18,7 @@ public class BookingLogController {
     }
 
     @GetMapping("/booking/{bookingId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BookingLog>> getLogsByBooking(
             @PathVariable Long bookingId) {
 

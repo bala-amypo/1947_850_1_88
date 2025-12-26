@@ -25,6 +25,7 @@ public class ApartmentUnitController {
     }
 
     @PutMapping("/assign/{unitId}/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApartmentUnit assignUnit(
             @PathVariable Long unitId,
             @PathVariable Long userId) {

@@ -35,6 +35,7 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) {
 
         return ResponseEntity.ok(
