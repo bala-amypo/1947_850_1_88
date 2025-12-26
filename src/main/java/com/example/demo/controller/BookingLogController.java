@@ -4,7 +4,7 @@ import com.example.demo.model.BookingLog;
 import com.example.demo.service.BookingLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class BookingLogController {
     }
 
     @GetMapping("/booking/{bookingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BookingLog>> getLogsByBooking(
             @PathVariable Long bookingId) {
 

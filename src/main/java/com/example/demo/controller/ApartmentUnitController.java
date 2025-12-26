@@ -3,13 +3,13 @@ package com.example.demo.controller;
 import com.example.demo.model.ApartmentUnit;
 import com.example.demo.service.ApartmentUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/units")
+// @RequestMapping("/units")
 public class ApartmentUnitController {
 
     @Autowired
@@ -22,13 +22,13 @@ public class ApartmentUnitController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public List<ApartmentUnit> getAllUnits() {
         return apartmentUnitService.getAllUnits();
     }
 
     @PutMapping("/assign/{unitId}/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ApartmentUnit assignUnit(
             @PathVariable Long unitId,
             @PathVariable Long userId) {
