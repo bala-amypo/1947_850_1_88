@@ -4,8 +4,6 @@ import com.example.demo.model.Facility;
 import com.example.demo.service.FacilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-// import org.springframework.security.access.prepost.PreAuthorize;
-
 import java.util.List;
 
 @RestController

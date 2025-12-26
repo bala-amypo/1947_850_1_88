@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 // import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
-// @RequestMapping("/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
