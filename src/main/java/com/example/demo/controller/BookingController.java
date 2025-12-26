@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 // import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
-// @RequestMapping("/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -36,7 +36,7 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) {
 
         return ResponseEntity.ok(
