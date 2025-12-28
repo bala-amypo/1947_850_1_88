@@ -43,6 +43,11 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
+        // Validate booking times
+        if (booking.getStartTime() == null || booking.getEndTime() == null) {
+            throw new IllegalArgumentException("Booking times cannot be null");
+        }
+
         if (booking.getEndTime().isBefore(booking.getStartTime()) ||
             booking.getEndTime().isEqual(booking.getStartTime())) {
             throw new IllegalArgumentException("Invalid booking time range");

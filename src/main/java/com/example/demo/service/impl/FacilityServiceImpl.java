@@ -12,7 +12,6 @@ import java.util.List;
 @Service
 public class FacilityServiceImpl implements FacilityService {
 
-    @Autowired
     private final FacilityRepository repo;
 
     public FacilityServiceImpl(FacilityRepository repo) {
@@ -21,8 +20,23 @@ public class FacilityServiceImpl implements FacilityService {
 
     @Override
     public Facility addFacility(Facility f) {
+        // Validate inputs
+        if (f.getName() == null || f.getName().trim().isEmpty()) {
+            throw new BadRequestException("Facility name cannot be empty");
+        }
+        if (f.getOpenTime() == null || f.getCloseTime() == null) {
+            throw new BadRequestException("Facility times cannot be null");
+        }
+        
+        // Check for duplicate name
+        if (repo.findByName(f.getName()).isPresent()) {
+            throw new BadRequestException("Facility with this name already exists");
+        }
+        
+        // Validate time range
         if (f.getOpenTime().compareTo(f.getCloseTime()) >= 0)
             throw new BadRequestException("Invalid time");
+        
         return repo.save(f);
     }
 

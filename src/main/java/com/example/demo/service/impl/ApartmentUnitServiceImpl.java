@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.ApartmentUnit;
 import com.example.demo.model.User;
 import com.example.demo.repository.ApartmentUnitRepository;
@@ -28,6 +29,9 @@ public class ApartmentUnitServiceImpl implements ApartmentUnitService {
 
     @Override
     public ApartmentUnit saveUnit(ApartmentUnit unit) {
+        if (unit.getUnitNumber() == null || unit.getUnitNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("Unit number cannot be empty");
+        }
         return apartmentUnitRepository.save(unit);
     }
 
@@ -40,10 +44,10 @@ public class ApartmentUnitServiceImpl implements ApartmentUnitService {
     public ApartmentUnit assignUnitToUser(Long unitId, Long userId) {
 
         ApartmentUnit unit = apartmentUnitRepository.findById(unitId)
-                .orElseThrow(() -> new RuntimeException("Unit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         unit.setOwner(user);
         return apartmentUnitRepository.save(unit);
@@ -52,7 +56,7 @@ public class ApartmentUnitServiceImpl implements ApartmentUnitService {
     @Override
     public ApartmentUnit assignUnitToUser(Long userId, ApartmentUnit unit) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
         unit.setOwner(user);
         return apartmentUnitRepository.save(unit);
@@ -61,7 +65,7 @@ public class ApartmentUnitServiceImpl implements ApartmentUnitService {
     @Override
     public ApartmentUnit getUnitByUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
         return apartmentUnitRepository.findByOwner(user).orElse(null);
     }
