@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.RegisterResponse;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-// import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,29 +26,47 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword()); // Don't encode here, service will handle it
         user.setRole(request.getRole() != null ? request.getRole() : "RESIDENT");
 
-        User savedUser = userService.register(user); // Use register method which handles encoding
-        return ResponseEntity.ok(savedUser);
+        User savedUser = userService.register(user);
+        
+        RegisterResponse response = new RegisterResponse(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+        
+        return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        User user = userService.findByEmail(request.getEmail());
 
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
 
-    User user = userService.findByEmail(request.getEmail());
+        String token = jwtTokenProvider.generateToken(
+                null,
+                user.getId(),
+                user.getEmail(),
+                user.getRole() != null ? user.getRole() : "RESIDENT"
+        );
 
-    if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        return ResponseEntity.status(401).body("Invalid email or password");
+        LoginResponse response = new LoginResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole() != null ? user.getRole() : "RESIDENT"
+        );
+
+        return ResponseEntity.ok(response);
     }
-
-    return ResponseEntity.ok(user);
-}
-
-
 }

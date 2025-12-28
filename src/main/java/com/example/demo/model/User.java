@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,10 +13,14 @@ public class User {
     
     private String name;
     private String email;
+    
+    @JsonIgnore
     private String password;
+    
     private String role = "RESIDENT";
     
     @OneToOne(mappedBy = "owner")
+    @JsonIgnore
     private ApartmentUnit apartmentUnit;
 
     public User() {}
